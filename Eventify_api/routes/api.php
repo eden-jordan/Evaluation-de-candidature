@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\admin\AuthController;
 use App\Http\Controllers\user\AuthController as UserAuthController;
 use App\Http\Controllers\admin\CategorieController;
+use App\Http\Controllers\admin\evenementController;
+use App\Http\Controllers\user\reservationController;
+use App\Http\Controllers\admin\reservationController as AdminReservationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,8 +24,10 @@ Route::post('/admin/login', [AuthController::class, 'login']);
 Route::post('/register', [UserAuthController::class, 'register']);
 Route::post('/login', [UserAuthController::class, 'login']);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/reservation/create', [reservationController::class, 'create']);
+    Route::get('/reservation/list', [reservationController::class, 'index']);
+    Route::delete('/reservation/delete/{id}', [reservationController::class, 'delete']);
 });
 
 Route::middleware(['auth:sanctum', 'est_admin'])->group(function () {
@@ -30,5 +35,10 @@ Route::middleware(['auth:sanctum', 'est_admin'])->group(function () {
     Route::get('/admin/categories/list', [CategorieController::class, 'index']);
     Route::put('/admin/categories/update/{id}', [CategorieController::class, 'update']);
     Route::delete('/admin/categories/delete/{id}', [CategorieController::class, 'delete']);
+
+    Route::post('/admin/evenements/create', [evenementController::class, 'create']);
+    Route::get('/admin/evenements/list', [evenementController::class, 'index']);
+
+    Route::get('/admin/reservations/list', [AdminReservationController::class, 'index']);
 });
 
